@@ -113,7 +113,7 @@
 
     .site-logo {
       display: block;
-      height: 90px;
+      height: 32px;
       width: auto;
       object-fit: contain;
     }
@@ -1219,6 +1219,89 @@
     }
     .slideshow .ss-tip.show {
       opacity: 1;
+    }
+
+    /* ---------- 移动端响应式（≤768px） ---------- */
+    @media (max-width: 768px) {
+      /* 导航栏：允许换行 */
+      .navbar {
+        flex-wrap: wrap;
+        height: auto;
+        padding: 10px 16px;
+        gap: 10px;
+      }
+
+      .nav-actions {
+        flex-wrap: wrap;
+        width: 100%;
+        gap: 8px;
+      }
+
+      /* 搜索框强制整行 */
+      .nav-search {
+        flex: 1 1 100%;
+        width: 100%;
+      }
+
+      .nav-select {
+        flex: 1 1 auto;
+        min-width: 0;
+      }
+
+      .nav-divider {
+        display: none;
+      }
+
+      .btn-nav {
+        padding: 6px 12px;
+        font-size: 12px;
+      }
+
+      /* 编辑模态框：适配手机 */
+      #editOverlay .modal {
+        width: 95vw;
+        max-width: 500px;
+        margin: 10px auto;
+      }
+
+      #editOverlay .field input[type="text"],
+      #editOverlay .field textarea,
+      #editOverlay .field select {
+        width: 100%;
+      }
+
+      #editOverlay .classify-grid {
+        grid-template-columns: 1fr;
+      }
+
+      #editOverlay .modal-actions {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 8px;
+        padding: 14px 20px 22px;
+      }
+
+      #editOverlay .modal-actions .btn {
+        width: 100%;
+      }
+
+      #editOverlay .modal-actions .spacer {
+        display: none;
+      }
+
+      /* 缩略图列表：横向滚动 + 尺寸缩小 */
+      #editOverlay .edit-thumbs {
+        overflow-x: auto;
+      }
+
+      #editOverlay .edit-thumb {
+        height: 64px;
+        max-width: 96px;
+      }
+
+      #editOverlay .edit-thumb img {
+        height: 64px;
+      }
     }
   </style>
 </head>
