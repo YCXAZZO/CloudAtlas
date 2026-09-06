@@ -3289,7 +3289,7 @@
 
       // ---- 幻灯片 ----
       // 背景音乐：全局公开链接 + 常驻 Audio 对象（循环播放）
-      const BGM_URL = "https://bgm.ycxazzo.top/music/bgm.mp3";
+      const BGM_URL = "https://cloudatlas.ycxazzo.top/bgm/bgm.mp3";
       const bgmAudio = new Audio(BGM_URL);
       bgmAudio.loop = true;
       var ssTimer = null;
@@ -3319,8 +3319,8 @@
               items.push({ src: src, name: c.name || "未命名" });
             });
           });
-          if (items.length < 3) {
-            window.alert("至少需要 3 张图片才能进入幻灯片模式，当前只有 " + items.length + " 张。");
+          if (items.length < 1) {
+            window.alert("至少需要 1 张图片才能进入幻灯片模式，当前只有 " + items.length + " 张。");
             return;
           }
           ssPlaylist = shuffle(items);
