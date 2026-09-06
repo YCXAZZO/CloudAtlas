@@ -8,6 +8,7 @@
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
   <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <style>
     /* ========== 基础与重置 ========== */
     * {
@@ -113,7 +114,7 @@
 
     .site-logo {
       display: block;
-      height: 90px;
+      height: 32px;
       width: auto;
       object-fit: contain;
     }
@@ -1576,10 +1577,15 @@
       "use strict";
 
       // ==============================================================
+      // 0. Supabase 配置与客户端
+      // ==============================================================
+      const SUPABASE_URL = "https://lshknrumpoirznhzbapb.supabase.co";
+      const SUPABASE_ANON_KEY = "sb_publishable_zdRX_cRkiDaRxEZx1yhIww_jdSQsE1A";
+      window.supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+      // ==============================================================
       // 1. 常量与配置
       // ==============================================================
-      var STORAGE_KEY = "cloudatlas.data"; // 旧的 localStorage 数据键
-      var SEEDED_KEY = "cloudatlas.seeded"; // 用于判断是否已初始化库，避免用户清空后又被自动填充
       var DB_NAME = "CloudAtlasDB";
       var CLOUDS_STORE = "clouds";
       var IMAGES_STORE = "images";
@@ -1668,55 +1674,6 @@
           };
         });
         return _dbPromise;
-      }
-
-      // ---- clouds 对象仓库 ----
-      function idbGetAll() {
-        return openDB().then(function (db) {
-          return new Promise(function (resolve, reject) {
-            var tx = db.transaction(CLOUDS_STORE, "readonly");
-            var store = tx.objectStore(CLOUDS_STORE);
-            var req = store.getAll();
-            req.onsuccess = function () {
-              resolve(req.result || []);
-            };
-            req.onerror = function () {
-              reject(req.error);
-            };
-          });
-        });
-      }
-
-      function idbPut(record) {
-        return openDB().then(function (db) {
-          return new Promise(function (resolve, reject) {
-            var tx = db.transaction(CLOUDS_STORE, "readwrite");
-            var store = tx.objectStore(CLOUDS_STORE);
-            var req = store.put(record);
-            req.onsuccess = function () {
-              resolve(record);
-            };
-            req.onerror = function () {
-              reject(req.error);
-            };
-          });
-        });
-      }
-
-      function idbDeleteRecord(id) {
-        return openDB().then(function (db) {
-          return new Promise(function (resolve, reject) {
-            var tx = db.transaction(CLOUDS_STORE, "readwrite");
-            var store = tx.objectStore(CLOUDS_STORE);
-            var req = store.delete(id);
-            req.onsuccess = function () {
-              resolve(true);
-            };
-            req.onerror = function () {
-              reject(req.error);
-            };
-          });
-        });
       }
 
       // ---- images 图片仓库 ----
@@ -1901,103 +1858,71 @@
         });
       }
 
-      // 首次加载时：把 localStorage 旧数据写入 IndexedDB 并清除 localStorage
-      function migrateLocalStorageToIdb() {
-        var raw = localStorage.getItem(STORAGE_KEY);
-        if (raw === null) return Promise.resolve(false);
-        var parsed;
-        try {
-          parsed = JSON.parse(raw);
-        } catch (e) {
-          return Promise.resolve(false);
-        }
-        if (!Array.isArray(parsed)) return Promise.resolve(false);
-        var normalized = normalize(parsed);
-        return Promise.all(normalized.map(function (c) {
-          return idbPut(c);
-        })).then(function () {
-          localStorage.removeItem(STORAGE_KEY);
-          return true; // 发生了迁移
-        });
-      }
-
-      function seedIfEmpty() {
-        var seed = normalize(JSON.parse(JSON.stringify(SEED_DATA)));
-        return Promise.all(seed.map(function (c) {
-          return idbPut(c);
-        })).then(function () {
-          localStorage.setItem(SEEDED_KEY, "1");
-          return seed;
-        });
-      }
-
-      // 统一读取入口：返回规范化的云朵数组（Promise）
+      // 统一读取入口：从 Supabase 拉取并规范化（Promise）
       function getAllClouds() {
-        return idbGetAll().then(function (raw) {
-          if (raw.length === 0) {
-            // 仅在「从未初始化」时自动填充示例；用户清空后不再次填充
-            if (localStorage.getItem(SEEDED_KEY) === "1") {
-              return [];
-            }
-            return seedIfEmpty();
-          }
-          if (localStorage.getItem(SEEDED_KEY) !== "1") {
-            localStorage.setItem(SEEDED_KEY, "1");
-          }
-          return normalize(raw);
+        return CloudAPI.getAll().then(function (list) {
+          if (!Array.isArray(list)) list = [];
+          return normalize(list.map(function (c) {
+            return Object.assign({}, c);
+          }));
         });
       }
 
       // ==============================================================
-      // 5. CloudAPI（全部异步，返回 Promise）
+      // 5. CloudAPI（基于 Supabase，全部异步返回 Promise）
       // ==============================================================
-      var CloudAPI = {
-        getAll: function () {
-          return getAllClouds();
+      const CloudAPI = {
+        // 获取所有云朵数据
+        getAll: async function () {
+          const { data, error } = await window.supabase
+            .from("clouds")
+            .select("*")
+            .order("created_at", { ascending: false });
+          if (error) {
+            console.error("获取数据失败:", error);
+            return [];
+          }
+          return data || [];
         },
 
-        add: function (cloud) {
-          return getAllClouds().then(function (list) {
-            var nextId =
-              list.reduce(function (m, c) {
-                return Math.max(m, Number(c.id) || 0);
-              }, 0) + 1;
-            var record = Object.assign(
-              { name: "", family: "高云族", genus: "", species: "", variant: "无", accessory: "无", desc: "", images: [] },
-              cloud,
-              { id: nextId }
-            );
-            record.images = (record.images && record.images.slice()) || [];
-            return idbPut(record).then(function () {
-              return record;
-            });
-          });
+        // 添加一朵新云
+        add: async function (cloud) {
+          const { data, error } = await window.supabase
+            .from("clouds")
+            .insert([cloud])
+            .select();
+          if (error) {
+            console.error("添加数据失败:", error);
+            return null;
+          }
+          return data ? data[0] : null;
         },
 
-        update: function (id, patch) {
-          return getAllClouds().then(function (list) {
-            var index = list.findIndex(function (c) {
-              return String(c.id) === String(id);
-            });
-            if (index === -1) return null;
-
-            var updated = Object.assign({}, list[index], patch);
-            updated.images = Array.isArray(patch.images)
-              ? patch.images.slice()
-              : (list[index].images || []).slice();
-            delete updated.image;
-            list[index] = updated;
-
-            return idbPut(updated).then(function () {
-              return updated;
-            });
-          });
+        // 更新一朵云
+        update: async function (id, updates) {
+          const { data, error } = await window.supabase
+            .from("clouds")
+            .update(updates)
+            .eq("id", id)
+            .select();
+          if (error) {
+            console.error("更新数据失败:", error);
+            return null;
+          }
+          return data ? data[0] : null;
         },
 
-        delete: function (id) {
-          return idbDeleteRecord(id).then(function () {
-            return true;
-          });
+        // 删除一朵云
+        delete: async function (id) {
+          const { error } = await window.supabase
+            .from("clouds")
+            .delete()
+            .eq("id", id);
+          if (error) {
+            console.error("删除数据失败:", error);
+            return false;
+          }
+          return true;
         },
       };
 
@@ -2772,14 +2697,12 @@
             var existing = await getAllClouds();
             await Promise.all(
               existing.map(function (c) {
-                return idbDeleteRecord(c.id);
+                return CloudAPI.delete(c.id);
               })
             );
-            await Promise.all(
-              data.map(function (c) {
-                return idbPut(c);
-              })
-            );
+            for (var i = 0; i < data.length; i++) {
+              await CloudAPI.add(data[i]);
+            }
           } else {
             var current = await getAllClouds();
             var seen = {};
@@ -2791,11 +2714,9 @@
               seen[String(c.id)] = true;
               return true;
             });
-            await Promise.all(
-              toAdd.map(function (c) {
-                return idbPut(c);
-              })
-            );
+            for (var j = 0; j < toAdd.length; j++) {
+              await CloudAPI.add(toAdd[j]);
+            }
           }
           showToast(mode === "overwrite" ? "覆盖导入完成" : "追加导入完成");
         } catch (err) {
@@ -3113,6 +3034,10 @@
           btnAdd.addEventListener("click", async function () {
             if (!(await ensureAuth())) return;
             var record = await CloudAPI.add({});
+            if (!record) {
+              window.alert("添加失败，请检查 Supabase 连接与表格配置");
+              return;
+            }
             createdId = record.id;
             openEditModal(record.id);
           });
@@ -3372,7 +3297,7 @@
 
       // ---- 幻灯片 ----
       // 背景音乐：全局公开链接 + 常驻 Audio 对象（循环播放）
-      const BGM_URL = "https://bgm.ycxazzo.top/bgm.mp3";
+      const BGM_URL = "https://bgm.ycxazzo.top/music/bgm.mp3";
       const bgmAudio = new Audio(BGM_URL);
       bgmAudio.loop = true;
       var ssTimer = null;
@@ -3616,17 +3541,14 @@
       function init() {
         initTheme();
         setupSiteLogo();
-        showToast("正在迁移数据...");
+        showToast("正在加载数据...");
         // 确保密码已初始化（首次自动写入默认密码 admin123）
         getStoredPassword()
           .catch(function (e) {
             console.warn("密码初始化失败", e);
           })
           .finally(function () {
-            migrateLocalStorageToIdb()
-              .then(function () {
-                return renderList();
-              })
+            renderList()
               .then(function () {
                 bindEvents();
                 ssBindEvents();
