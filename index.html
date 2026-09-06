@@ -2588,13 +2588,32 @@
       async function saveEdit() {
         if (selectedId == null) return;
         if (!(await ensureAuth())) return;
-        var patch = readClassify();
-        patch.name = document.getElementById("editName").value;
-        patch.desc = document.getElementById("editDesc").value;
-        patch.images = Array.isArray(pendingImages) ? pendingImages.slice() : [];
-        console.log("[CloudAtlas] 保存前 images 数量:", patch.images.length, patch.images);
-        await CloudAPI.update(selectedId, patch);
-        console.log("[CloudAtlas] 保存完成");
+
+        // 读取并校验云朵名称（name 必须有值）
+        var nameInput = document.getElementById("editName");
+        var name = nameInput ? nameInput.value.trim() : "";
+        if (!name) {
+          window.alert("请输入云朵名称");
+          if (nameInput) nameInput.focus();
+          return;
+        }
+
+        var classify = readClassify();
+        var cloudData = {
+          name: name,
+          desc: document.getElementById("editDesc").value,
+          family: classify.family,
+          genus: classify.genus,
+          species: classify.species,
+          variant: classify.variant,
+          accessory: classify.accessory,
+          images: Array.isArray(pendingImages) ? pendingImages.slice() : [],
+        };
+        console.log("保存数据:", cloudData);
+        console.log("[CloudAtlas] 保存前 images 数量:", cloudData.images.length, cloudData.images);
+
+        var result = await CloudAPI.update(selectedId, cloudData);
+        console.log("[CloudAtlas] 保存完成", result);
         createdId = null;
         await renderList();
         await closeEdit();
@@ -3033,7 +3052,18 @@
         if (btnAdd) {
           btnAdd.addEventListener("click", async function () {
             if (!(await ensureAuth())) return;
-            var record = await CloudAPI.add({});
+            // 插入一个含默认字段（name 非空）的对象，避免 Supabase NOT NULL 报错
+            var defaultCloud = {
+              name: "未命名",
+              desc: "",
+              family: "高云族",
+              genus: "",
+              species: "",
+              variant: "无",
+              accessory: "无",
+              images: [],
+            };
+            var record = await CloudAPI.add(defaultCloud);
             if (!record) {
               window.alert("添加失败，请检查 Supabase 连接与表格配置");
               return;
