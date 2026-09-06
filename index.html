@@ -114,7 +114,7 @@
 
     .site-logo {
       display: block;
-      height: 32px;
+      height: 90px;
       width: auto;
       object-fit: contain;
     }
@@ -1581,7 +1581,9 @@
       // ==============================================================
       const SUPABASE_URL = "https://lshknrumpoirznhzbapb.supabase.co";
       const SUPABASE_ANON_KEY = "sb_publishable_zdRX_cRkiDaRxEZx1yhIww_jdSQsE1A";
-      const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+      // 将全局 window.supabase 初始化为客户端实例，CloudAPI 统一使用 window.supabase
+      window.supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+      const supabase = window.supabase; // 兼容引用别名
 
       // ==============================================================
       // 1. 常量与配置
@@ -1874,7 +1876,7 @@
       const CloudAPI = {
         // 获取所有云朵数据
         getAll: async function () {
-          const { data, error } = await supabase
+          const { data, error } = await window.supabase
             .from("clouds")
             .select("*")
             .order("created_at", { ascending: false }); // 按 created_at 降序，最新在前
@@ -1887,7 +1889,12 @@
 
         // 添加一朵新云
         add: async function (cloud) {
-          const { data, error } = await supabase
+          // 添加前校验 name 必须有值
+          if (!cloud || !cloud.name || String(cloud.name).trim() === "") {
+            window.alert("请输入云朵名称");
+            return null;
+          }
+          const { data, error } = await window.supabase
             .from("clouds")
             .insert([cloud])
             .select();
@@ -1900,7 +1907,7 @@
 
         // 更新一朵云
         update: async function (id, updates) {
-          const { data, error } = await supabase
+          const { data, error } = await window.supabase
             .from("clouds")
             .update(updates)
             .eq("id", id)
@@ -1914,7 +1921,7 @@
 
         // 删除一朵云
         delete: async function (id) {
-          const { error } = await supabase
+          const { error } = await window.supabase
             .from("clouds")
             .delete()
             .eq("id", id);
