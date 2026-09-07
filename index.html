@@ -952,48 +952,69 @@
                 width: 260px;
             }
         }
-        @media (max-width: 768px) {
-            #class-panel {
-                position: fixed;
-                top: var(--nav-height);
-                left: 0;
-                bottom: 0;
-                z-index: 80;
-                transform: translateX(-100%);
-                width: 280px;
-                border-radius: 0 var(--radius-md) var(--radius-md) 0;
-            }
-            #class-panel.mobile-open {
-                transform: translateX(0);
-            }
-            #detail-panel {
-                position: fixed;
-                top: var(--nav-height);
-                right: 0;
-                bottom: 0;
-                z-index: 80;
-                transform: translateX(100%);
-                width: 300px;
-                border-radius: var(--radius-md) 0 0 var(--radius-md);
-            }
-            #detail-panel.mobile-open {
-                transform: translateX(0);
-            }
-            #main-container {
-                padding: 8px;
-                gap: 8px;
-            }
-            :root {
-                --nav-height: 56px;
-                --thumbs-height: 80px;
-            }
-            .logo-text {
-                font-size: 16px;
-            }
-            #top-bar {
-                padding: 0 12px;
-            }
-        }
+@media (max-width: 768px) {
+    :root {
+        --nav-height: auto;       /* 改为自动高度，适应换行 */
+        --thumbs-height: 80px;
+    }
+
+    #top-bar {
+        flex-wrap: wrap;
+        padding: 10px 12px;
+        height: auto;
+        gap: 8px;
+    }
+
+    #top-bar .logo {
+        flex-shrink: 0;
+    }
+
+    #top-bar .logo-sub {
+        display: none;            /* 隐藏子标题 */
+    }
+
+    #top-bar .nav-actions {
+        width: 100%;
+        flex-wrap: wrap;
+        justify-content: flex-start;
+        gap: 6px;
+    }
+
+    #search-input {
+        flex: 1 1 100%;           /* 搜索框占满整行 */
+        width: auto;
+        min-width: 0;
+    }
+
+    .glass-btn {
+        padding: 6px 10px;
+        font-size: 12px;
+        gap: 4px;
+    }
+
+    .glass-btn.icon-btn {
+        padding: 6px;
+        width: 32px;
+        height: 32px;
+        font-size: 14px;
+    }
+
+    .theme-toggle-btn {
+        width: 32px;
+        height: 32px;
+        font-size: 16px;
+    }
+
+    /* 分类与详情面板在移动端的定位不变，但宽度调整 */
+    #class-panel {
+        width: 280px;
+        top: 56px;
+    }
+    #detail-panel {
+        width: 300px;
+        top: 56px;
+    }
+}
 
         /* ---- 图片上传拖拽区 ---- */
         #drop-zone {
