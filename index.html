@@ -2959,15 +2959,30 @@
                 $('#btn-settings-close').addEventListener('click', closeSettings);
                 $('#btn-set-password').addEventListener('click', () => {
                     const pwd = dom.settingsPassword.value.trim();
-                    if (pwd) {
-                        setPassword(pwd);
-                        showToast('密码已设置', 'success');
+                    if (isPasswordSet()) {
+                        // 已有密码，必须验证旧密码
+                        requestPassword((verified) => {
+                            if (!verified) return;
+                            if (pwd) {
+                                setPassword(pwd);
+                                showToast('密码已更新', 'success');
                     } else {
                         setPassword('');
                         showToast('密码已清除', 'info');
                     }
                     dom.settingsPassword.value = '';
                 });
+            } else {
+                // 首次设置密码
+                if (pwd) {
+                    setPassword(pwd);
+                    showToast('密码已设置', 'success');
+                    dom.settingsPassword.value = '';
+                } else {
+                    showToast('请输入新密码', 'info');
+                }
+            }
+        });
                 $('#btn-save-logo').addEventListener('click', () => {
                     const url = dom.settingsLogoUrl.value.trim();
                     if (url) {
