@@ -2013,11 +2013,9 @@
                             err.textContent = "";
                             authToken = genToken();
                             authExpiresAt = Date.now() + AUTH_SESSION_MS;
-
-                            // ✅ 修复：首次设置也存入 localStorage
+                            // ✅ 新增两行
                             localStorage.setItem('cloudatlas_auth_token', authToken);
                             localStorage.setItem('cloudatlas_auth_expires', authExpiresAt);
-
                             closePasswordModal();
                             if (authResolve) {
                                 var r = authResolve;
