@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="zh-CN" data-theme="dark">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -21,6 +22,7 @@
            CSS 变量 · 毛玻璃通透风 · 支持深色/浅色主题
            ============================================================ */
         :root {
+            --logo-size: 40px;   /* 默认Logo尺寸 */
             /* 深色模式（默认） */
             --glass-bg: rgba(255, 255, 255, 0.06);
             --glass-bg-strong: rgba(255, 255, 255, 0.12);
@@ -126,12 +128,15 @@
             scrollbar-width: thin;
             scrollbar-color: rgba(128, 128, 128, 0.25) transparent;
         }
+
         .scrollable::-webkit-scrollbar {
             width: 4px;
         }
+
         .scrollable::-webkit-scrollbar-track {
             background: transparent;
         }
+
         .scrollable::-webkit-scrollbar-thumb {
             background: rgba(128, 128, 128, 0.25);
             border-radius: 4px;
@@ -179,30 +184,36 @@
             gap: 6px;
             white-space: nowrap;
         }
+
         .glass-btn:hover {
             background: var(--glass-bg-strong);
             border-color: var(--glass-border);
             transform: translateY(-1px);
         }
+
         .glass-btn:active {
             transform: translateY(0);
             opacity: 0.8;
         }
+
         .glass-btn.primary {
             background: var(--accent-glow);
             border-color: var(--accent);
             color: var(--text-primary);
             font-weight: 500;
         }
+
         .glass-btn.primary:hover {
             background: var(--accent-glow);
             border-color: var(--accent);
             opacity: 0.9;
         }
+
         .glass-btn.danger {
             border-color: rgba(240, 100, 100, 0.4);
             color: var(--danger);
         }
+
         .glass-btn.icon-btn {
             padding: 8px 10px;
             border-radius: 50%;
@@ -248,13 +259,15 @@
             cursor: pointer;
             transition: var(--transition);
         }
+
         #top-bar .logo:hover {
             opacity: 0.85;
         }
+
         #top-bar .logo-icon {
-            width: 40px;
-            height: 40px;
-            border-radius: 12px;
+            width: var(--logo-size);          /* 使用变量 */
+            height: var(--logo-size);         /* 使用变量 */
+            border-radius: calc(var(--logo-size) * 0.3);  /* 圆角随尺寸微调，也可固定 */
             overflow: hidden;
             display: flex;
             align-items: center;
@@ -263,28 +276,12 @@
             border: 1px solid var(--glass-border);
             flex-shrink: 0;
         }
+
         #top-bar .logo-icon img {
             width: 100%;
             height: 100%;
             object-fit: cover;
             display: block;
-        }
-        #top-bar .logo-text {
-            font-family: var(--font-serif);
-            font-size: 20px;
-            font-weight: 600;
-            letter-spacing: 1px;
-            background: linear-gradient(135deg, var(--text-primary), var(--text-secondary));
-            -webkit-background-clip: text;
-            background-clip: text;
-            color: transparent;
-            -webkit-text-fill-color: transparent;
-        }
-        #top-bar .logo-sub {
-            font-size: 11px;
-            color: var(--text-muted);
-            letter-spacing: 2px;
-            margin-top: 2px;
         }
 
         #top-bar .nav-actions {
@@ -315,12 +312,14 @@
             transition: var(--transition);
             min-height: 0;
         }
+
         #class-panel.collapsed {
             width: 0;
             opacity: 0;
             pointer-events: none;
             margin-right: 0;
         }
+
         #class-panel .panel-header {
             padding: 14px 16px;
             border-bottom: 1px solid var(--glass-border);
@@ -329,6 +328,7 @@
             justify-content: space-between;
             flex-shrink: 0;
         }
+
         #class-panel .panel-title {
             font-size: 14px;
             font-weight: 600;
@@ -336,6 +336,7 @@
             color: var(--text-secondary);
             text-transform: uppercase;
         }
+
         #class-panel .panel-body {
             flex: 1;
             overflow-y: auto;
@@ -349,9 +350,11 @@
             flex-direction: column;
             gap: 2px;
         }
+
         .taxonomy-group {
             margin-bottom: 8px;
         }
+
         .taxonomy-group-label {
             font-size: 11px;
             font-weight: 600;
@@ -365,26 +368,32 @@
             align-items: center;
             gap: 6px;
         }
+
         .taxonomy-group-label:hover {
             color: var(--text-accent);
         }
+
         .taxonomy-group-label .arrow {
             transition: var(--transition-fast);
             font-size: 10px;
             display: inline-block;
         }
+
         .taxonomy-group-label .arrow.open {
             transform: rotate(90deg);
         }
+
         .taxonomy-children {
             display: flex;
             flex-direction: column;
             gap: 1px;
             padding-left: 12px;
         }
+
         .taxonomy-children.collapsed {
             display: none;
         }
+
         .taxonomy-item {
             padding: 7px 10px;
             border-radius: var(--radius-sm);
@@ -398,16 +407,19 @@
             border: 1px solid transparent;
             position: relative;
         }
+
         .taxonomy-item:hover {
             background: var(--glass-bg-strong);
             color: var(--text-primary);
         }
+
         .taxonomy-item.active {
             background: var(--accent-glow);
             border-color: var(--accent);
             color: var(--text-primary);
             font-weight: 500;
         }
+
         .taxonomy-item .count-badge {
             font-size: 10px;
             background: var(--glass-bg);
@@ -416,10 +428,12 @@
             margin-left: auto;
             color: var(--text-muted);
         }
+
         .taxonomy-item.active .count-badge {
             background: var(--glass-bg-strong);
             color: var(--text-primary);
         }
+
         .taxonomy-item .color-dot {
             width: 8px;
             height: 8px;
@@ -447,6 +461,7 @@
             overflow: hidden;
             position: relative;
         }
+
         .main-swiper .swiper-slide {
             display: flex;
             align-items: center;
@@ -455,6 +470,7 @@
             position: relative;
             cursor: grab;
         }
+
         .main-swiper .swiper-slide img {
             max-width: 100%;
             max-height: 100%;
@@ -464,9 +480,11 @@
             -webkit-user-drag: none;
             transition: transform 0.3s ease;
         }
+
         .main-swiper .swiper-slide:hover img {
             transform: scale(1.01);
         }
+
         .slide-overlay {
             position: absolute;
             bottom: 16px;
@@ -487,6 +505,7 @@
             text-overflow: ellipsis;
             border: 1px solid var(--glass-border);
         }
+
         .empty-gallery {
             display: flex;
             flex-direction: column;
@@ -497,16 +516,20 @@
             color: var(--text-muted);
             font-size: 15px;
         }
+
         .empty-gallery .empty-icon {
             font-size: 64px;
             opacity: 0.5;
             animation: floatCloud 3s ease-in-out infinite;
         }
+
         @keyframes floatCloud {
+
             0%,
             100% {
                 transform: translateY(0);
             }
+
             50% {
                 transform: translateY(-10px);
             }
@@ -525,11 +548,13 @@
             overflow: hidden;
             position: relative;
         }
+
         #thumbs-bar .thumbs-swiper {
             flex: 1;
             height: 100%;
             min-width: 0;
         }
+
         #thumbs-bar .thumbs-swiper .swiper-slide {
             width: 80px;
             height: 100%;
@@ -544,6 +569,7 @@
             opacity: 0.6;
             background: var(--glass-bg);
         }
+
         #thumbs-bar .thumbs-swiper .swiper-slide img {
             width: 100%;
             height: 100%;
@@ -552,14 +578,17 @@
             pointer-events: none;
             -webkit-user-drag: none;
         }
+
         #thumbs-bar .thumbs-swiper .swiper-slide-thumb-active {
             border-color: var(--accent);
             opacity: 1;
             box-shadow: 0 0 16px var(--accent-glow);
         }
+
         #thumbs-bar .thumbs-swiper .swiper-slide:hover {
             opacity: 0.9;
         }
+
         .thumb-placeholder {
             display: flex;
             align-items: center;
@@ -581,12 +610,14 @@
             transition: var(--transition);
             min-height: 0;
         }
+
         #detail-panel.collapsed {
             width: 0;
             opacity: 0;
             pointer-events: none;
             margin-left: 0;
         }
+
         #detail-panel .panel-header {
             padding: 14px 16px;
             border-bottom: 1px solid var(--glass-border);
@@ -595,15 +626,18 @@
             justify-content: space-between;
             flex-shrink: 0;
         }
+
         #detail-panel .panel-body {
             flex: 1;
             overflow-y: auto;
             padding: 16px;
             min-height: 0;
         }
+
         .detail-section {
             margin-bottom: 20px;
         }
+
         .detail-section h4 {
             font-size: 11px;
             font-weight: 600;
@@ -612,6 +646,7 @@
             color: var(--text-muted);
             margin-bottom: 8px;
         }
+
         .detail-field {
             margin-bottom: 8px;
             font-size: 14px;
@@ -621,11 +656,13 @@
             gap: 8px;
             flex-wrap: wrap;
         }
+
         .detail-field .label {
             color: var(--text-muted);
             font-size: 12px;
             min-width: 60px;
         }
+
         .tag-badge {
             display: inline-block;
             padding: 4px 10px;
@@ -638,10 +675,12 @@
             transition: var(--transition-fast);
             cursor: pointer;
         }
+
         .tag-badge:hover {
             background: var(--glass-bg-strong);
             color: var(--text-primary);
         }
+
         .tag-badge.active {
             background: var(--accent-glow);
             border-color: var(--accent);
@@ -663,10 +702,12 @@
             pointer-events: none;
             transition: var(--transition);
         }
+
         .modal-overlay.active {
             opacity: 1;
             pointer-events: auto;
         }
+
         .modal-content {
             background: var(--glass-bg-strong);
             backdrop-filter: blur(30px) saturate(1.5);
@@ -682,9 +723,11 @@
             transform: translateY(20px) scale(0.96);
             transition: var(--transition);
         }
+
         .modal-overlay.active .modal-content {
             transform: translateY(0) scale(1);
         }
+
         .modal-content h3 {
             font-family: var(--font-serif);
             font-size: 22px;
@@ -692,9 +735,11 @@
             letter-spacing: 0.5px;
             color: var(--text-primary);
         }
+
         .modal-content .form-group {
             margin-bottom: 14px;
         }
+
         .modal-content .form-group label {
             display: block;
             font-size: 12px;
@@ -702,6 +747,7 @@
             margin-bottom: 4px;
             letter-spacing: 0.5px;
         }
+
         .modal-content .form-group input,
         .modal-content .form-group select,
         .modal-content .form-group textarea {
@@ -716,20 +762,24 @@
             outline: none;
             transition: var(--transition-fast);
         }
+
         .modal-content .form-group input:focus,
         .modal-content .form-group select:focus,
         .modal-content .form-group textarea:focus {
             border-color: var(--accent);
             box-shadow: 0 0 12px var(--accent-glow);
         }
+
         .modal-content .form-group textarea {
             resize: vertical;
             min-height: 80px;
         }
+
         .modal-content .form-group select option {
             background: var(--bg-gradient-2);
             color: var(--text-primary);
         }
+
         .modal-actions {
             display: flex;
             gap: 10px;
@@ -750,25 +800,30 @@
             pointer-events: none;
             transition: opacity 0.5s ease;
         }
+
         #fullscreen-mode.active {
             opacity: 1;
             pointer-events: auto;
         }
+
         #fullscreen-mode .fs-swiper {
             width: 100vw;
             height: 100vh;
         }
+
         #fullscreen-mode .fs-swiper .swiper-slide {
             display: flex;
             align-items: center;
             justify-content: center;
             background: #000;
         }
+
         #fullscreen-mode .fs-swiper .swiper-slide img {
             max-width: 100vw;
             max-height: 100vh;
             object-fit: contain;
         }
+
         #fs-controls {
             position: fixed;
             bottom: 24px;
@@ -785,6 +840,7 @@
             border-radius: 30px;
             border: 1px solid rgba(255, 255, 255, 0.12);
         }
+
         #fs-controls .fs-btn {
             background: none;
             border: 1px solid rgba(255, 255, 255, 0.25);
@@ -799,16 +855,19 @@
             justify-content: center;
             transition: var(--transition-fast);
         }
+
         #fs-controls .fs-btn:hover {
             background: rgba(255, 255, 255, 0.15);
             border-color: rgba(255, 255, 255, 0.4);
         }
+
         #fs-controls .fs-counter {
             color: rgba(255, 255, 255, 0.7);
             font-size: 13px;
             min-width: 50px;
             text-align: center;
         }
+
         #fs-close {
             position: fixed;
             top: 24px;
@@ -828,6 +887,7 @@
             justify-content: center;
             transition: var(--transition-fast);
         }
+
         #fs-close:hover {
             background: rgba(255, 255, 255, 0.2);
             transform: rotate(90deg);
@@ -837,18 +897,22 @@
         #password-modal {
             z-index: 150;
         }
+
         #password-modal .modal-content {
             max-width: 400px;
             text-align: center;
         }
+
         #password-modal .password-input-wrap {
             position: relative;
             display: flex;
             align-items: center;
         }
+
         #password-modal .password-input-wrap input {
             padding-right: 44px;
         }
+
         #password-modal .password-input-wrap .toggle-pass {
             position: absolute;
             right: 8px;
@@ -871,6 +935,7 @@
             gap: 8px;
             pointer-events: none;
         }
+
         .toast {
             background: var(--glass-bg-strong);
             backdrop-filter: blur(16px);
@@ -884,16 +949,19 @@
             max-width: 300px;
             pointer-events: auto;
         }
+
         @keyframes toastIn {
             from {
                 opacity: 0;
                 transform: translateX(30px);
             }
+
             to {
                 opacity: 1;
                 transform: translateX(0);
             }
         }
+
         @keyframes toastOut {
             to {
                 opacity: 0;
@@ -918,26 +986,33 @@
             transition: var(--transition);
             cursor: pointer;
         }
+
         #bgm-widget:hover {
             background: var(--glass-bg-strong);
         }
+
         #bgm-widget .bgm-icon {
             font-size: 18px;
             animation: bgmPulse 2s ease-in-out infinite;
         }
+
         #bgm-widget .bgm-icon.paused {
             animation: none;
             opacity: 0.6;
         }
+
         @keyframes bgmPulse {
+
             0%,
             100% {
                 transform: scale(1);
             }
+
             50% {
                 transform: scale(1.15);
             }
         }
+
         #bgm-widget .bgm-text {
             font-size: 11px;
             color: var(--text-muted);
@@ -948,73 +1023,79 @@
             :root {
                 --panel-width: 240px;
             }
+
             #detail-panel {
                 width: 260px;
             }
         }
-@media (max-width: 768px) {
-    :root {
-        --nav-height: auto;       /* 改为自动高度，适应换行 */
-        --thumbs-height: 80px;
-    }
 
-    #top-bar {
-        flex-wrap: wrap;
-        padding: 10px 12px;
-        height: auto;
-        gap: 8px;
-    }
+        @media (max-width: 768px) {
+            :root {
+                --nav-height: auto;
+                /* 改为自动高度，适应换行 */
+                --thumbs-height: 80px;
+            }
 
-    #top-bar .logo {
-        flex-shrink: 0;
-    }
+            #top-bar {
+                flex-wrap: wrap;
+                padding: 10px 12px;
+                height: auto;
+                gap: 8px;
+            }
 
-    #top-bar .logo-sub {
-        display: none;            /* 隐藏子标题 */
-    }
+            #top-bar .logo {
+                flex-shrink: 0;
+            }
 
-    #top-bar .nav-actions {
-        width: 100%;
-        flex-wrap: wrap;
-        justify-content: flex-start;
-        gap: 6px;
-    }
+            #top-bar .logo-sub {
+                display: none;
+                /* 隐藏子标题 */
+            }
 
-    #search-input {
-        flex: 1 1 100%;           /* 搜索框占满整行 */
-        width: auto;
-        min-width: 0;
-    }
+            #top-bar .nav-actions {
+                width: 100%;
+                flex-wrap: wrap;
+                justify-content: flex-start;
+                gap: 6px;
+            }
 
-    .glass-btn {
-        padding: 6px 10px;
-        font-size: 12px;
-        gap: 4px;
-    }
+            #search-input {
+                flex: 1 1 100%;
+                /* 搜索框占满整行 */
+                width: auto;
+                min-width: 0;
+            }
 
-    .glass-btn.icon-btn {
-        padding: 6px;
-        width: 32px;
-        height: 32px;
-        font-size: 14px;
-    }
+            .glass-btn {
+                padding: 6px 10px;
+                font-size: 12px;
+                gap: 4px;
+            }
 
-    .theme-toggle-btn {
-        width: 32px;
-        height: 32px;
-        font-size: 16px;
-    }
+            .glass-btn.icon-btn {
+                padding: 6px;
+                width: 32px;
+                height: 32px;
+                font-size: 14px;
+            }
 
-    /* 分类与详情面板在移动端的定位不变，但宽度调整 */
-    #class-panel {
-        width: 280px;
-        top: 56px;
-    }
-    #detail-panel {
-        width: 300px;
-        top: 56px;
-    }
-}
+            .theme-toggle-btn {
+                width: 32px;
+                height: 32px;
+                font-size: 16px;
+            }
+
+            /* 分类与详情面板在移动端的定位不变，但宽度调整 */
+            #class-panel {
+                width: 280px;
+                top: 56px;
+            }
+
+            #detail-panel {
+                width: 300px;
+                top: 56px;
+            }
+        }
 
         /* ---- 图片上传拖拽区 ---- */
         #drop-zone {
@@ -1035,15 +1116,18 @@
             transition: var(--transition);
             margin: 20px;
         }
+
         #drop-zone.active {
             opacity: 1;
             pointer-events: auto;
         }
+
         #drop-zone .drop-inner {
             text-align: center;
             font-size: 16px;
             letter-spacing: 1px;
         }
+
         #drop-zone .drop-inner .big-icon {
             font-size: 56px;
             display: block;
@@ -1061,11 +1145,13 @@
             flex-shrink: 0;
             flex-wrap: wrap;
         }
+
         #stats-bar .stat-item {
             display: flex;
             align-items: center;
             gap: 4px;
         }
+
         #stats-bar .stat-num {
             font-weight: 600;
             color: var(--text-secondary);
@@ -1084,9 +1170,11 @@
             transition: var(--transition);
             font-family: var(--font-sans);
         }
+
         #search-input::placeholder {
             color: var(--text-muted);
         }
+
         #search-input:focus {
             border-color: var(--accent);
             box-shadow: 0 0 12px var(--accent-glow);
@@ -1108,12 +1196,14 @@
             transition: var(--transition-fast);
             color: var(--text-primary);
         }
+
         .theme-toggle-btn:hover {
             background: var(--glass-bg-strong);
             transform: rotate(20deg);
         }
     </style>
 </head>
+
 <body>
 
     <!-- ============================================================
@@ -1124,11 +1214,7 @@
         <header id="top-bar">
             <div class="logo" id="logo-btn" title="CloudAtlas · 云岫集">
                 <div class="logo-icon" id="logo-icon-container">
-                    <img id="logo-img" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='45' fill='%23a8d8ff' opacity='0.6'/%3E%3Cpath d='M30,65 Q40,45 50,65 Q60,45 70,65 Z' fill='%23ffffff'/%3E%3C/svg%3E" alt="CloudAtlas Logo">
-                </div>
-                <div>
-                    <div class="logo-text">CloudAtlas</div>
-                    <div class="logo-sub">云 岫 集</div>
+                    <img id="logo-img" src="data:image/svg+xml,..." alt="CloudAtlas Logo">
                 </div>
             </div>
             <div class="nav-actions">
@@ -1241,7 +1327,8 @@
             <input type="file" id="photo-file-input" accept="image/*" multiple style="display:none;">
             <div class="form-group">
                 <label>照片文件（可多选）</label>
-                <button class="glass-btn" id="btn-select-files" style="width:100%;justify-content:center;padding:16px;border-style:dashed;">
+                <button class="glass-btn" id="btn-select-files"
+                    style="width:100%;justify-content:center;padding:16px;border-style:dashed;">
                     📁 点击选择照片
                 </button>
                 <div id="selected-files-preview" style="margin-top:8px;display:flex;flex-wrap:wrap;gap:8px;"></div>
@@ -1256,15 +1343,21 @@
             </div>
             <div class="form-group">
                 <label>云种（Cloud Species）</label>
-                <select id="edit-species"><option value="">— 选择 —</option></select>
+                <select id="edit-species">
+                    <option value="">— 选择 —</option>
+                </select>
             </div>
             <div class="form-group">
                 <label>变种（Variety）</label>
-                <select id="edit-variety"><option value="">— 选择 —</option></select>
+                <select id="edit-variety">
+                    <option value="">— 选择 —</option>
+                </select>
             </div>
             <div class="form-group">
                 <label>附属云（Supplementary Feature）</label>
-                <select id="edit-feature"><option value="">— 选择 —</option></select>
+                <select id="edit-feature">
+                    <option value="">— 选择 —</option>
+                </select>
             </div>
             <div class="form-group">
                 <label>描述</label>
@@ -1300,6 +1393,11 @@
                 <button class="glass-btn" id="btn-save-logo" style="margin-top:6px;">保存 Logo</button>
             </div>
             <div class="form-group">
+                <label>Logo 尺寸 (px)</label>
+                <input type="number" id="settings-logo-size" min="20" max="100" step="1" value="40">
+                <button class="glass-btn" id="btn-save-logo-size" style="margin-top:6px;">保存尺寸</button>
+            </div>
+            <div class="form-group">
                 <label>BGM 音乐 URL（可选，Cloudflare R2 链接）</label>
                 <input type="url" id="settings-bgm-url" placeholder="https://r2.example.com/bgm.mp3">
             </div>
@@ -1312,7 +1410,8 @@
             <div class="form-group">
                 <label>Supabase 配置（可选，用于云端元数据同步）</label>
                 <input type="url" id="settings-supabase-url" placeholder="Supabase Project URL">
-                <input type="password" id="settings-supabase-key" placeholder="Supabase Anon Key" style="margin-top:6px;">
+                <input type="password" id="settings-supabase-key" placeholder="Supabase Anon Key"
+                    style="margin-top:6px;">
             </div>
             <div class="form-group">
                 <label>自定义气象分类（JSON 格式，可覆盖默认分类）</label>
@@ -1356,7 +1455,7 @@
     主 JavaScript 模块
     ============================================================ -->
     <script>
-        (function() {
+        (function () {
             'use strict';
 
             // ============================================================
@@ -1375,6 +1474,7 @@
             const LS_SORT_ORDER = 'cloudatlas_sort_order';
             const LS_LOGO_URL = 'cloudatlas_logo_url';
             const LS_THEME = 'cloudatlas_theme';
+            const LS_LOGO_SIZE = 'cloudatlas_logo_size';
             const LS_TAXONOMY_CUSTOM = 'cloudatlas_taxonomy_custom';
             const LS_R2_ENDPOINT = 'cloudatlas_r2_endpoint';
             const LS_R2_BUCKET = 'cloudatlas_r2_bucket';
@@ -1384,14 +1484,22 @@
             // ============================================================
             const DEFAULT_TAXONOMY = {
                 families: [
-                    { id: 'high', name: '高云族', nameEn: 'High Clouds', altitude: '5-13 km',
-                        color: '#a8d8ff' },
-                    { id: 'middle', name: '中云族', nameEn: 'Middle Clouds', altitude: '2-7 km',
-                        color: '#c8d8f0' },
-                    { id: 'low', name: '低云族', nameEn: 'Low Clouds', altitude: '0-2 km',
-                        color: '#e8e0d0' },
-                    { id: 'vertical', name: '直展云族', nameEn: 'Vertical Clouds', altitude: '跨高度',
-                        color: '#f0c8a0' }
+                    {
+                        id: 'high', name: '高云族', nameEn: 'High Clouds', altitude: '5-13 km',
+                        color: '#a8d8ff'
+                    },
+                    {
+                        id: 'middle', name: '中云族', nameEn: 'Middle Clouds', altitude: '2-7 km',
+                        color: '#c8d8f0'
+                    },
+                    {
+                        id: 'low', name: '低云族', nameEn: 'Low Clouds', altitude: '0-2 km',
+                        color: '#e8e0d0'
+                    },
+                    {
+                        id: 'vertical', name: '直展云族', nameEn: 'Vertical Clouds', altitude: '跨高度',
+                        color: '#f0c8a0'
+                    }
                 ],
                 genera: {
                     high: [
@@ -1534,6 +1642,7 @@
                 bgmAudio: $('#bgm-audio'),
                 logoImg: $('#logo-img'),
                 themeToggleBtn: $('#btn-toggle-theme'),
+                settingsLogoSize: $('#settings-logo-size'),
             };
 
             // ============================================================
@@ -1565,8 +1674,13 @@
             function initLogo() {
                 const saved = localStorage.getItem(LS_LOGO_URL);
                 applyLogo(saved || '');
-            }
 
+                // 应用Logo尺寸
+                const size = localStorage.getItem(LS_LOGO_SIZE);
+                if (size && !isNaN(size) && size > 0) {
+                    document.documentElement.style.setProperty('--logo-size', size + 'px');
+                }
+            }
             // ============================================================
             // 自定义分类管理
             // ============================================================
@@ -2230,7 +2344,7 @@
                     },
                     keyboard: { enabled: true },
                     on: {
-                        slideChange: function() {
+                        slideChange: function () {
                             state.currentIndex = this.activeIndex;
                             updateDetailPanel();
                         }
@@ -2248,7 +2362,7 @@
                     },
                     keyboard: { enabled: true },
                     on: {
-                        slideChange: function() {
+                        slideChange: function () {
                             updateFsCounter();
                         }
                     }
@@ -2641,8 +2755,10 @@
                             const r2Url = await uploadToR2IfConfigured(photoData, processed.originalBlob);
                             if (r2Url) photoData.r2Url = r2Url;
 
-                            await idbAdd(IDB_STORE_IMAGES, { id: photoId, blob: processed
-                                    .originalBlob });
+                            await idbAdd(IDB_STORE_IMAGES, {
+                                id: photoId, blob: processed
+                                    .originalBlob
+                            });
                             state.imageBlobs[photoId] = URL.createObjectURL(processed.originalBlob);
                             await savePhoto(photoData);
                             state.photos.push(photoData);
@@ -2696,7 +2812,7 @@
                     updateFsCounter();
                 }
                 if (document.documentElement.requestFullscreen) {
-                    document.documentElement.requestFullscreen().catch(() => {});
+                    document.documentElement.requestFullscreen().catch(() => { });
                 }
             }
 
@@ -2705,7 +2821,7 @@
                 dom.fullscreenMode.classList.remove('active');
                 if (state.fsAutoPlay) toggleFsAutoPlay(false);
                 if (document.fullscreenElement && document.exitFullscreen) {
-                    document.exitFullscreen().catch(() => {});
+                    document.exitFullscreen().catch(() => { });
                 }
             }
 
@@ -2778,6 +2894,7 @@
                 requestPassword((verified) => {
                     if (!verified) return;  // 验证失败或取消，不打开设置
                     // 填充设置面板字段
+                    dom.settingsLogoSize.value = parseInt(localStorage.getItem(LS_LOGO_SIZE) || '40', 10);
                     dom.settingsPassword.value = '';
                     dom.settingsBgmUrl.value = localStorage.getItem(LS_BGM_URL) || '';
                     dom.settingsSupabaseUrl.value = localStorage.getItem(LS_SUPABASE_URL) || '';
@@ -2886,7 +3003,16 @@
                     dom.themeToggleBtn.textContent = next === 'dark' ? '☀️' : '🌙';
                     showToast(`已切换到${next === 'dark' ? '深色' : '浅色'}模式`, 'success');
                 });
-
+                $('#btn-save-logo-size').addEventListener('click', () => {
+                    const size = parseInt(dom.settingsLogoSize.value, 10);
+                    if (size >= 20 && size <= 100) {
+                        localStorage.setItem(LS_LOGO_SIZE, size);
+                        document.documentElement.style.setProperty('--logo-size', size + 'px');
+                        showToast('Logo尺寸已更新', 'success');
+                    } else {
+                        showToast('尺寸范围20-100px', 'error');
+                    }
+                });
                 // 分类面板切换
                 $('#btn-toggle-class').addEventListener('click', () => {
                     if (window.innerWidth <= 768) {
@@ -2992,23 +3118,23 @@
                             if (pwd) {
                                 setPassword(pwd);
                                 showToast('密码已更新', 'success');
+                            } else {
+                                setPassword('');
+                                showToast('密码已清除', 'info');
+                            }
+                            dom.settingsPassword.value = '';
+                        });
                     } else {
-                        setPassword('');
-                        showToast('密码已清除', 'info');
+                        // 首次设置密码
+                        if (pwd) {
+                            setPassword(pwd);
+                            showToast('密码已设置', 'success');
+                            dom.settingsPassword.value = '';
+                        } else {
+                            showToast('请输入新密码', 'info');
+                        }
                     }
-                    dom.settingsPassword.value = '';
                 });
-            } else {
-                // 首次设置密码
-                if (pwd) {
-                    setPassword(pwd);
-                    showToast('密码已设置', 'success');
-                    dom.settingsPassword.value = '';
-                } else {
-                    showToast('请输入新密码', 'info');
-                }
-            }
-        });
                 $('#btn-save-logo').addEventListener('click', () => {
                     const url = dom.settingsLogoUrl.value.trim();
                     if (url) {
