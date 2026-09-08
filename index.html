@@ -22,7 +22,8 @@
            CSS 变量 · 毛玻璃通透风 · 支持深色/浅色主题
            ============================================================ */
         :root {
-            --logo-size: 40px;   /* 默认Logo尺寸 */
+            --logo-height: 40px;
+            /* Logo 显示高度，宽度自动 */
             /* 深色模式（默认） */
             --glass-bg: rgba(255, 255, 255, 0.06);
             --glass-bg-strong: rgba(255, 255, 255, 0.12);
@@ -265,22 +266,21 @@
         }
 
         #top-bar .logo-icon {
-            width: var(--logo-size);          /* 使用变量 */
-            height: var(--logo-size);         /* 使用变量 */
-            border-radius: calc(var(--logo-size) * 0.3);  /* 圆角随尺寸微调，也可固定 */
-            overflow: hidden;
+            height: var(--logo-height);
+            width: auto;
+            max-width: 240px;
             display: flex;
             align-items: center;
             justify-content: center;
-            background: var(--glass-bg);
-            border: 1px solid var(--glass-border);
+            background: transparent;
+            border: none;
             flex-shrink: 0;
+            overflow: visible;
         }
 
         #top-bar .logo-icon img {
-            width: 100%;
             height: 100%;
-            object-fit: cover;
+            width: auto;
             display: block;
         }
 
@@ -1032,7 +1032,6 @@
         @media (max-width: 768px) {
             :root {
                 --nav-height: auto;
-                /* 改为自动高度，适应换行 */
                 --thumbs-height: 80px;
             }
 
@@ -1047,11 +1046,6 @@
                 flex-shrink: 0;
             }
 
-            #top-bar .logo-sub {
-                display: none;
-                /* 隐藏子标题 */
-            }
-
             #top-bar .nav-actions {
                 width: 100%;
                 flex-wrap: wrap;
@@ -1061,7 +1055,6 @@
 
             #search-input {
                 flex: 1 1 100%;
-                /* 搜索框占满整行 */
                 width: auto;
                 min-width: 0;
             }
@@ -1085,7 +1078,6 @@
                 font-size: 16px;
             }
 
-            /* 分类与详情面板在移动端的定位不变，但宽度调整 */
             #class-panel {
                 width: 280px;
                 top: 56px;
@@ -1214,7 +1206,7 @@
         <header id="top-bar">
             <div class="logo" id="logo-btn" title="CloudAtlas · 云岫集">
                 <div class="logo-icon" id="logo-icon-container">
-                    <img id="logo-img" src="data:image/svg+xml,..." alt="CloudAtlas Logo">
+                    <img id="logo-img" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='45' fill='%23a8d8ff' opacity='0.6'/%3E%3Cpath d='M30,65 Q40,45 50,65 Q60,45 70,65 Z' fill='%23ffffff'/%3E%3C/svg%3E" alt="CloudAtlas Logo">
                 </div>
             </div>
             <div class="nav-actions">
@@ -1382,47 +1374,63 @@
     <div class="modal-overlay" id="settings-modal">
         <div class="modal-content">
             <h3>⚙️ 设置</h3>
+
+            <!-- Logo 设置（新版：高度 + 深色/浅色独立URL） -->
+            <div class="form-group">
+                <label>Logo 高度 (px)</label>
+                <input type="number" id="settings-logo-height" min="20" max="150" step="1" value="40">
+            </div>
+            <div class="form-group">
+                <label>浅色模式 Logo URL</label>
+                <input type="url" id="settings-logo-url-light" placeholder="https://example.com/logo-light.png">
+            </div>
+            <div class="form-group">
+                <label>深色模式 Logo URL</label>
+                <input type="url" id="settings-logo-url-dark" placeholder="https://example.com/logo-dark.png">
+            </div>
+            <div class="form-group">
+                <button class="glass-btn primary" id="btn-save-logo-settings" style="width:100%;justify-content:center;">💾 保存 Logo 设置</button>
+            </div>
+
+            <hr style="border-color:var(--glass-border);margin:18px 0;">
+
             <div class="form-group">
                 <label>编辑密码</label>
                 <input type="password" id="settings-password" placeholder="设置编辑密码" autocomplete="off">
                 <button class="glass-btn" id="btn-set-password" style="margin-top:6px;">设置/更新密码</button>
             </div>
-            <div class="form-group">
-                <label>Logo 图片 URL（外部链接）</label>
-                <input type="url" id="settings-logo-url" placeholder="https://example.com/logo.png">
-                <button class="glass-btn" id="btn-save-logo" style="margin-top:6px;">保存 Logo</button>
-            </div>
-            <div class="form-group">
-                <label>Logo 尺寸 (px)</label>
-                <input type="number" id="settings-logo-size" min="20" max="100" step="1" value="40">
-                <button class="glass-btn" id="btn-save-logo-size" style="margin-top:6px;">保存尺寸</button>
-            </div>
+
             <div class="form-group">
                 <label>BGM 音乐 URL（可选，Cloudflare R2 链接）</label>
                 <input type="url" id="settings-bgm-url" placeholder="https://r2.example.com/bgm.mp3">
             </div>
+
             <div class="form-group">
                 <label>R2 存储接口配置（用于照片云存储）</label>
                 <input type="url" id="settings-r2-endpoint" placeholder="R2 上传接口 URL，如 https://api.example.com/upload">
                 <input type="text" id="settings-r2-bucket" placeholder="存储桶名称（可选）" style="margin-top:6px;">
                 <small style="color:var(--text-muted);">若不配置，照片将仅存储在本地 IndexedDB</small>
             </div>
+
             <div class="form-group">
                 <label>Supabase 配置（可选，用于云端元数据同步）</label>
                 <input type="url" id="settings-supabase-url" placeholder="Supabase Project URL">
                 <input type="password" id="settings-supabase-key" placeholder="Supabase Anon Key"
                     style="margin-top:6px;">
             </div>
+
             <div class="form-group">
                 <label>自定义气象分类（JSON 格式，可覆盖默认分类）</label>
                 <textarea id="settings-taxonomy-json" rows="6" style="font-family:monospace;font-size:12px;"></textarea>
                 <button class="glass-btn" id="btn-save-taxonomy" style="margin-top:6px;">保存自定义分类</button>
                 <button class="glass-btn" id="btn-reset-taxonomy" style="margin-top:6px;margin-left:6px;">恢复默认</button>
             </div>
+
             <div class="form-group">
                 <label>当前数据模式</label>
                 <div id="settings-data-mode" style="font-size:13px;color:var(--text-secondary);">本地模式（IndexedDB）</div>
             </div>
+
             <div class="modal-actions">
                 <button class="glass-btn" id="btn-settings-close">关闭</button>
                 <button class="glass-btn danger" id="btn-clear-data">清空所有数据</button>
@@ -1462,7 +1470,7 @@
             // 常量与配置
             // ============================================================
             const IDB_NAME = 'CloudAtlasDB';
-            const IDB_VERSION = 3; // 升级版本以支持新存储
+            const IDB_VERSION = 3;
             const IDB_STORE_PHOTOS = 'photos';
             const IDB_STORE_IMAGES = 'images';
             const IDB_STORE_META = 'meta';
@@ -1472,34 +1480,25 @@
             const LS_SUPABASE_URL = 'cloudatlas_supabase_url';
             const LS_SUPABASE_KEY = 'cloudatlas_supabase_key';
             const LS_SORT_ORDER = 'cloudatlas_sort_order';
-            const LS_LOGO_URL = 'cloudatlas_logo_url';
             const LS_THEME = 'cloudatlas_theme';
-            const LS_LOGO_SIZE = 'cloudatlas_logo_size';
             const LS_TAXONOMY_CUSTOM = 'cloudatlas_taxonomy_custom';
             const LS_R2_ENDPOINT = 'cloudatlas_r2_endpoint';
             const LS_R2_BUCKET = 'cloudatlas_r2_bucket';
+
+            // Logo 相关新常量
+            const LS_LOGO_URL_LIGHT = 'cloudatlas_logo_url_light';
+            const LS_LOGO_URL_DARK = 'cloudatlas_logo_url_dark';
+            const LS_LOGO_HEIGHT = 'cloudatlas_logo_height';
 
             // ============================================================
             // 默认五级气象分类体系
             // ============================================================
             const DEFAULT_TAXONOMY = {
                 families: [
-                    {
-                        id: 'high', name: '高云族', nameEn: 'High Clouds', altitude: '5-13 km',
-                        color: '#a8d8ff'
-                    },
-                    {
-                        id: 'middle', name: '中云族', nameEn: 'Middle Clouds', altitude: '2-7 km',
-                        color: '#c8d8f0'
-                    },
-                    {
-                        id: 'low', name: '低云族', nameEn: 'Low Clouds', altitude: '0-2 km',
-                        color: '#e8e0d0'
-                    },
-                    {
-                        id: 'vertical', name: '直展云族', nameEn: 'Vertical Clouds', altitude: '跨高度',
-                        color: '#f0c8a0'
-                    }
+                    { id: 'high', name: '高云族', nameEn: 'High Clouds', altitude: '5-13 km', color: '#a8d8ff' },
+                    { id: 'middle', name: '中云族', nameEn: 'Middle Clouds', altitude: '2-7 km', color: '#c8d8f0' },
+                    { id: 'low', name: '低云族', nameEn: 'Low Clouds', altitude: '0-2 km', color: '#e8e0d0' },
+                    { id: 'vertical', name: '直展云族', nameEn: 'Vertical Clouds', altitude: '跨高度', color: '#f0c8a0' }
                 ],
                 genera: {
                     high: [
@@ -1523,12 +1522,15 @@
                 },
                 species: {
                     ci: ['毛状云 (fibratus)', '钩状云 (uncinus)', '密卷云 (spissatus)', '堡状云 (castellanus)',
-                        '絮状云 (floccus)'],
+                        '絮状云 (floccus)'
+                    ],
                     cc: ['层状卷积云 (stratiformis)', '荚状卷积云 (lenticularis)', '堡状卷积云 (castellanus)',
-                        '絮状卷积云 (floccus)'],
+                        '絮状卷积云 (floccus)'
+                    ],
                     cs: ['毛状卷层云 (fibratus)', '雾状卷层云 (nebulosus)'],
                     ac: ['层状高积云 (stratiformis)', '荚状高积云 (lenticularis)', '堡状高积云 (castellanus)',
-                        '絮状高积云 (floccus)'],
+                        '絮状高积云 (floccus)'
+                    ],
                     as: ['雾状高层云 (nebulosus)'],
                     ns: ['—'],
                     sc: ['层状层积云 (stratiformis)', '荚状层积云 (lenticularis)', '堡状层积云 (castellanus)'],
@@ -1546,10 +1548,8 @@
                 ]
             };
 
-            // 当前使用的分类数据（初始为默认，可被自定义覆盖）
+            // 当前使用的分类数据
             let TAXONOMY = JSON.parse(JSON.stringify(DEFAULT_TAXONOMY));
-
-            // 扁平化所有云属（用于快速查找）
             let ALL_GENERA = Object.values(TAXONOMY.genera).flat();
 
             // ============================================================
@@ -1630,10 +1630,13 @@
                 settingsSupabaseUrl: $('#settings-supabase-url'),
                 settingsSupabaseKey: $('#settings-supabase-key'),
                 settingsDataMode: $('#settings-data-mode'),
-                settingsLogoUrl: $('#settings-logo-url'),
                 settingsTaxonomyJson: $('#settings-taxonomy-json'),
                 settingsR2Endpoint: $('#settings-r2-endpoint'),
                 settingsR2Bucket: $('#settings-r2-bucket'),
+                // 新 Logo 设置字段
+                settingsLogoHeight: $('#settings-logo-height'),
+                settingsLogoUrlLight: $('#settings-logo-url-light'),
+                settingsLogoUrlDark: $('#settings-logo-url-dark'),
                 dropZone: $('#drop-zone'),
                 toastContainer: $('#toast-container'),
                 bgmWidget: $('#bgm-widget'),
@@ -1642,45 +1645,51 @@
                 bgmAudio: $('#bgm-audio'),
                 logoImg: $('#logo-img'),
                 themeToggleBtn: $('#btn-toggle-theme'),
-                settingsLogoSize: $('#settings-logo-size'),
             };
 
             // ============================================================
             // 主题管理
             // ============================================================
+            function getCurrentTheme() {
+                return document.documentElement.getAttribute('data-theme') || 'dark';
+            }
+
             function applyTheme(theme) {
                 document.documentElement.setAttribute('data-theme', theme);
                 localStorage.setItem(LS_THEME, theme);
+                dom.themeToggleBtn.textContent = theme === 'dark' ? '☀️' : '🌙';
+                // 切换主题时重新应用对应 Logo
+                applyLogoForTheme(theme);
             }
 
             function initTheme() {
                 const saved = localStorage.getItem(LS_THEME) || 'dark';
                 applyTheme(saved);
-                dom.themeToggleBtn.textContent = saved === 'dark' ? '☀️' : '🌙';
             }
 
             // ============================================================
-            // Logo 管理
+            // Logo 管理（新版：支持深色/浅色模式独立URL）
             // ============================================================
-            function applyLogo(url) {
-                if (url && url.trim()) {
-                    dom.logoImg.src = url;
-                } else {
-                    dom.logoImg.src =
-                        "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='45' fill='%23a8d8ff' opacity='0.6'/%3E%3Cpath d='M30,65 Q40,45 50,65 Q60,45 70,65 Z' fill='%23ffffff'/%3E%3C/svg%3E";
-                }
+            function applyLogoForTheme(theme) {
+                const key = theme === 'light' ? LS_LOGO_URL_LIGHT : LS_LOGO_URL_DARK;
+                const fallbackKey = theme === 'light' ? LS_LOGO_URL_DARK : LS_LOGO_URL_LIGHT;
+                const savedUrl = localStorage.getItem(key);
+                const fallbackUrl = localStorage.getItem(fallbackKey);
+                const defaultLogo =
+                    "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='45' fill='%23a8d8ff' opacity='0.6'/%3E%3Cpath d='M30,65 Q40,45 50,65 Q60,45 70,65 Z' fill='%23ffffff'/%3E%3C/svg%3E";
+                dom.logoImg.src = savedUrl || fallbackUrl || defaultLogo;
             }
 
             function initLogo() {
-                const saved = localStorage.getItem(LS_LOGO_URL);
-                applyLogo(saved || '');
-
-                // 应用Logo尺寸
-                const size = localStorage.getItem(LS_LOGO_SIZE);
-                if (size && !isNaN(size) && size > 0) {
-                    document.documentElement.style.setProperty('--logo-size', size + 'px');
+                // 读取保存的高度
+                const height = localStorage.getItem(LS_LOGO_HEIGHT);
+                if (height && !isNaN(height) && height > 0) {
+                    document.documentElement.style.setProperty('--logo-height', height + 'px');
                 }
+                // 根据当前主题应用 Logo
+                applyLogoForTheme(getCurrentTheme());
             }
+
             // ============================================================
             // 自定义分类管理
             // ============================================================
@@ -2066,13 +2075,12 @@
             }
 
             async function uploadToR2IfConfigured(photoData, originalBlob) {
-                if (!state.r2Endpoint) return null; // 未配置R2，直接返回null
+                if (!state.r2Endpoint) return null;
                 try {
                     const formData = new FormData();
                     formData.append('file', originalBlob, photoData.fileName || 'cloud.jpg');
                     formData.append('photoId', photoData.id);
                     if (state.r2Bucket) formData.append('bucket', state.r2Bucket);
-                    // 可以添加其他元数据
                     formData.append('description', photoData.description || '');
                     formData.append('location', photoData.location || '');
 
@@ -2118,17 +2126,15 @@
                             width: processed.width,
                             height: processed.height,
                             createdAt: Date.now(),
-                            r2Url: null, // 初始为null
+                            r2Url: null,
                         };
 
-                        // 尝试上传到R2（如果配置）
                         const r2Url = await uploadToR2IfConfigured(photoData, processed.originalBlob);
                         if (r2Url) {
                             photoData.r2Url = r2Url;
                             showToast(`照片已上传到R2: ${file.name}`, 'success');
                         }
 
-                        // 仍然存储在IndexedDB作为本地缓存
                         await idbAdd(IDB_STORE_IMAGES, { id: photoId, blob: processed.originalBlob });
                         state.imageBlobs[photoId] = URL.createObjectURL(processed.originalBlob);
                         await savePhoto(photoData);
@@ -2222,7 +2228,6 @@
                     tree.appendChild(group);
                 });
 
-                // 变种和附属云单独分组
                 const varGroup = document.createElement('div');
                 varGroup.className = 'taxonomy-group';
                 const varLabel = document.createElement('div');
@@ -2812,7 +2817,7 @@
                     updateFsCounter();
                 }
                 if (document.documentElement.requestFullscreen) {
-                    document.documentElement.requestFullscreen().catch(() => { });
+                    document.documentElement.requestFullscreen().catch(() => {});
                 }
             }
 
@@ -2821,7 +2826,7 @@
                 dom.fullscreenMode.classList.remove('active');
                 if (state.fsAutoPlay) toggleFsAutoPlay(false);
                 if (document.fullscreenElement && document.exitFullscreen) {
-                    document.exitFullscreen().catch(() => { });
+                    document.exitFullscreen().catch(() => {});
                 }
             }
 
@@ -2892,18 +2897,22 @@
             // ============================================================
             function openSettings() {
                 requestPassword((verified) => {
-                    if (!verified) return;  // 验证失败或取消，不打开设置
-                    // 填充设置面板字段
-                    dom.settingsLogoSize.value = parseInt(localStorage.getItem(LS_LOGO_SIZE) || '40', 10);
+                    if (!verified) return;
+                    // 填充新 Logo 设置字段
+                    dom.settingsLogoHeight.value = parseInt(localStorage.getItem(LS_LOGO_HEIGHT) || '40', 10);
+                    dom.settingsLogoUrlLight.value = localStorage.getItem(LS_LOGO_URL_LIGHT) || '';
+                    dom.settingsLogoUrlDark.value = localStorage.getItem(LS_LOGO_URL_DARK) || '';
+
                     dom.settingsPassword.value = '';
                     dom.settingsBgmUrl.value = localStorage.getItem(LS_BGM_URL) || '';
                     dom.settingsSupabaseUrl.value = localStorage.getItem(LS_SUPABASE_URL) || '';
                     dom.settingsSupabaseKey.value = localStorage.getItem(LS_SUPABASE_KEY) || '';
-                    dom.settingsLogoUrl.value = localStorage.getItem(LS_LOGO_URL) || '';
-                    dom.settingsTaxonomyJson.value = localStorage.getItem(LS_TAXONOMY_CUSTOM) || JSON.stringify(DEFAULT_TAXONOMY, null, 2);
+                    dom.settingsTaxonomyJson.value = localStorage.getItem(LS_TAXONOMY_CUSTOM) || JSON.stringify(
+                        DEFAULT_TAXONOMY, null, 2);
                     dom.settingsR2Endpoint.value = state.r2Endpoint || '';
                     dom.settingsR2Bucket.value = state.r2Bucket || '';
-                    dom.settingsDataMode.textContent = state.supabase ? '云端模式（Supabase已连接）' : '本地模式（IndexedDB）';
+                    dom.settingsDataMode.textContent = state.supabase ? '云端模式（Supabase已连接）' :
+                        '本地模式（IndexedDB）';
                     showModal(dom.settingsModal);
                 });
             }
@@ -2997,22 +3006,12 @@
 
                 // 主题切换
                 dom.themeToggleBtn.addEventListener('click', () => {
-                    const current = document.documentElement.getAttribute('data-theme');
+                    const current = getCurrentTheme();
                     const next = current === 'dark' ? 'light' : 'dark';
                     applyTheme(next);
-                    dom.themeToggleBtn.textContent = next === 'dark' ? '☀️' : '🌙';
                     showToast(`已切换到${next === 'dark' ? '深色' : '浅色'}模式`, 'success');
                 });
-                $('#btn-save-logo-size').addEventListener('click', () => {
-                    const size = parseInt(dom.settingsLogoSize.value, 10);
-                    if (size >= 20 && size <= 100) {
-                        localStorage.setItem(LS_LOGO_SIZE, size);
-                        document.documentElement.style.setProperty('--logo-size', size + 'px');
-                        showToast('Logo尺寸已更新', 'success');
-                    } else {
-                        showToast('尺寸范围20-100px', 'error');
-                    }
-                });
+
                 // 分类面板切换
                 $('#btn-toggle-class').addEventListener('click', () => {
                     if (window.innerWidth <= 768) {
@@ -3109,10 +3108,30 @@
                 // 设置相关
                 $('#btn-settings').addEventListener('click', openSettings);
                 $('#btn-settings-close').addEventListener('click', closeSettings);
+
+                // 保存 Logo 设置（新版）
+                $('#btn-save-logo-settings').addEventListener('click', () => {
+                    const height = parseInt(dom.settingsLogoHeight.value, 10);
+                    if (height >= 20 && height <= 150) {
+                        localStorage.setItem(LS_LOGO_HEIGHT, height);
+                        document.documentElement.style.setProperty('--logo-height', height + 'px');
+                    } else {
+                        showToast('Logo高度需在20-150px之间', 'error');
+                        return;
+                    }
+                    const lightUrl = dom.settingsLogoUrlLight.value.trim();
+                    const darkUrl = dom.settingsLogoUrlDark.value.trim();
+                    if (lightUrl) localStorage.setItem(LS_LOGO_URL_LIGHT, lightUrl);
+                    else localStorage.removeItem(LS_LOGO_URL_LIGHT);
+                    if (darkUrl) localStorage.setItem(LS_LOGO_URL_DARK, darkUrl);
+                    else localStorage.removeItem(LS_LOGO_URL_DARK);
+                    applyLogoForTheme(getCurrentTheme());
+                    showToast('Logo设置已保存', 'success');
+                });
+
                 $('#btn-set-password').addEventListener('click', () => {
                     const pwd = dom.settingsPassword.value.trim();
                     if (isPasswordSet()) {
-                        // 已有密码，必须验证旧密码
                         requestPassword((verified) => {
                             if (!verified) return;
                             if (pwd) {
@@ -3125,7 +3144,6 @@
                             dom.settingsPassword.value = '';
                         });
                     } else {
-                        // 首次设置密码
                         if (pwd) {
                             setPassword(pwd);
                             showToast('密码已设置', 'success');
@@ -3135,18 +3153,7 @@
                         }
                     }
                 });
-                $('#btn-save-logo').addEventListener('click', () => {
-                    const url = dom.settingsLogoUrl.value.trim();
-                    if (url) {
-                        localStorage.setItem(LS_LOGO_URL, url);
-                        applyLogo(url);
-                        showToast('Logo 已更新', 'success');
-                    } else {
-                        localStorage.removeItem(LS_LOGO_URL);
-                        applyLogo('');
-                        showToast('已恢复默认Logo', 'info');
-                    }
-                });
+
                 $('#btn-save-taxonomy').addEventListener('click', () => {
                     const json = dom.settingsTaxonomyJson.value.trim();
                     if (json) {
@@ -3158,6 +3165,7 @@
                 $('#btn-reset-taxonomy').addEventListener('click', () => {
                     resetTaxonomy();
                 });
+
                 $('#btn-clear-data').addEventListener('click', () => {
                     requestPassword((verified) => {
                         if (!verified) return;
@@ -3302,7 +3310,7 @@
                 try {
                     // 初始化主题
                     initTheme();
-                    // 初始化Logo
+                    // 初始化Logo（新版）
                     initLogo();
                     // 加载自定义分类
                     loadCustomTaxonomy();
@@ -3343,4 +3351,5 @@
         })();
     </script>
 </body>
+
 </html>
