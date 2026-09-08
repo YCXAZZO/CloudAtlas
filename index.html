@@ -2775,18 +2775,20 @@
             // 设置
             // ============================================================
             function openSettings() {
-                dom.settingsPassword.value = '';
-                dom.settingsBgmUrl.value = localStorage.getItem(LS_BGM_URL) || '';
-                dom.settingsSupabaseUrl.value = localStorage.getItem(LS_SUPABASE_URL) || '';
-                dom.settingsSupabaseKey.value = localStorage.getItem(LS_SUPABASE_KEY) || '';
-                dom.settingsLogoUrl.value = localStorage.getItem(LS_LOGO_URL) || '';
-                dom.settingsTaxonomyJson.value = localStorage.getItem(LS_TAXONOMY_CUSTOM) || JSON.stringify(
-                    DEFAULT_TAXONOMY, null, 2);
-                dom.settingsR2Endpoint.value = state.r2Endpoint || '';
-                dom.settingsR2Bucket.value = state.r2Bucket || '';
-                dom.settingsDataMode.textContent = state.supabase ? '云端模式（Supabase已连接）' :
-                    '本地模式（IndexedDB）';
-                showModal(dom.settingsModal);
+                requestPassword((verified) => {
+                    if (!verified) return;  // 验证失败或取消，不打开设置
+                    // 填充设置面板字段
+                    dom.settingsPassword.value = '';
+                    dom.settingsBgmUrl.value = localStorage.getItem(LS_BGM_URL) || '';
+                    dom.settingsSupabaseUrl.value = localStorage.getItem(LS_SUPABASE_URL) || '';
+                    dom.settingsSupabaseKey.value = localStorage.getItem(LS_SUPABASE_KEY) || '';
+                    dom.settingsLogoUrl.value = localStorage.getItem(LS_LOGO_URL) || '';
+                    dom.settingsTaxonomyJson.value = localStorage.getItem(LS_TAXONOMY_CUSTOM) || JSON.stringify(DEFAULT_TAXONOMY, null, 2);
+                    dom.settingsR2Endpoint.value = state.r2Endpoint || '';
+                    dom.settingsR2Bucket.value = state.r2Bucket || '';
+                    dom.settingsDataMode.textContent = state.supabase ? '云端模式（Supabase已连接）' : '本地模式（IndexedDB）';
+                    showModal(dom.settingsModal);
+                });
             }
 
             function closeSettings() {
